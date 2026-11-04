@@ -1,7 +1,6 @@
 # Package Tracker: DHL, FedEx, UPS, USPS & 17TRACK — privacy content
 
-Imzlab is replacing per-product privacy pages with one generic privacy page for all products. `plugin.json` points at https://imzlab.com/privacy; if the generic page gets a different path, change `privacyPolicyUrl` there and the "Full policy" link in README.md. The section below is the plugin-specific content to add to that generic page (as a product section) once it exists. Anthropic's reviewer opens the URL, so it must be live before the directory submission.
-
+Published 2026-11-04 as the "Package Tracker plugin for Claude" section of Imzlab's site-wide pages: https://imzlab.com/privacy#package-tracker (the `privacyPolicyUrl` in `plugin.json`), with matching sections at https://imzlab.com/terms#package-tracker and https://imzlab.com/support#package-tracker. The source of those sections is the imzlab website repo (`src/components/legal/`). The text below is the draft they were written from; keep the site as the source of truth and update it when data practices change.
 ---
 
 ## Package Tracker for Claude

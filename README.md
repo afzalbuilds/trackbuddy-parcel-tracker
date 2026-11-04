@@ -56,7 +56,7 @@ Before any batch over 10 numbers, Claude tells you the estimated cost and asks b
 - Results are stored in your Apify account's datasets for your plan's retention period, where you can download them as CSV, Excel or JSON. The plugin stores nothing itself and sends nothing to any other service.
 - Tracking records can include delivery addresses and recipient names shown on the carrier's public page. Treat them as personal data.
 - You authorize Apify through OAuth. The plugin never sees or stores your Apify token.
-- Full policy: https://imzlab.com/privacy
+- Full policy: https://imzlab.com/privacy#package-tracker. Terms: https://imzlab.com/terms#package-tracker. Support: https://imzlab.com/support#package-tracker
 
 ## Frequently asked questions
 
