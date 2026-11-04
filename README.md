@@ -52,7 +52,7 @@ Before any batch over 10 numbers, Claude tells you the estimated cost and asks b
 
 ## Data and privacy
 
-- Tracking numbers you give Claude are sent to Apify's hosted MCP server (`mcp.apify.com`), which runs the tracking Actor on your Apify account. The Actor queries the carrier's public tracking page or, for DHL when you supply your own key, DHL's official API.
+- Tracking numbers you give Claude are sent to Apify's hosted MCP server (`mcp.apify.com`), which runs the tracking Actor on your Apify account. The Actor queries the carrier's public tracking page.
 - Results are stored in your Apify account's datasets for your plan's retention period, where you can download them as CSV, Excel or JSON. The plugin stores nothing itself and sends nothing to any other service.
 - Tracking records can include delivery addresses and recipient names shown on the carrier's public page. Treat them as personal data.
 - You authorize Apify through OAuth. The plugin never sees or stores your Apify token.
@@ -60,7 +60,7 @@ Before any batch over 10 numbers, Claude tells you the estimated cost and asks b
 
 ## Frequently asked questions
 
-**Do I need a FedEx, UPS or DHL developer account?** No. The trackers read the same public tracking pages you would open in a browser. For DHL you may optionally supply a developer.dhl.com key to use the official API.
+**Do I need a FedEx, UPS or DHL developer account?** No. The trackers read the same public tracking pages you would open in a browser, and the plugin never asks for carrier API keys.
 
 **How many numbers can I track at once?** Per run: 10 for DHL and 17TRACK, 25 for UPS and the multi-carrier tracker, 30 for FedEx. Claude splits longer lists into several runs automatically and merges the results.
 

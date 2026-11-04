@@ -9,9 +9,9 @@ Package Tracker: DHL, FedEx, UPS, USPS & 17TRACK ("the plugin", plugin id `track
 
 ### What the plugin does with your data
 
-- **Tracking numbers.** When you ask Claude to track a package, the tracking numbers you provide are sent by Claude to Apify's MCP server at `mcp.apify.com`, which starts a tracking Actor run on your own Apify account. The Actor queries the carrier's public tracking page (DHL, FedEx, UPS, 17TRACK) or, if you supply your own DHL developer key, DHL's official tracking API.
+- **Tracking numbers.** When you ask Claude to track a package, the tracking numbers you provide are sent by Claude to Apify's MCP server at `mcp.apify.com`, which starts a tracking Actor run on your own Apify account. The Actor queries the carrier's public tracking page (DHL, FedEx, UPS, 17TRACK).
 - **Results.** Tracking results are written to datasets and key-value stores in your Apify account and returned to Claude for display. They may contain delivery addresses, recipient names and scan locations as shown on the carrier's public tracking page.
-- **Optional inputs.** A DHL API key or recipient postal code you choose to provide is passed to the DHL Actor for that run only and is never written to results or logs by the Actor.
+- **Optional inputs.** A recipient postal code you choose to provide for DHL destination verification is passed to the DHL Actor for that run only and is never written to results or logs by the Actor. The plugin never asks for carrier API keys.
 
 ### What we do not do
 

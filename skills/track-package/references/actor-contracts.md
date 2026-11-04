@@ -30,7 +30,7 @@ Input:
 }
 ```
 - Always send `demoMode: false` for real numbers. DHL's sample number `7777777770` with `demoMode: true` returns a labelled demo record; mixing it with real numbers rejects the run.
-- `accessMode`: `auto` uses DHL's public site, or the official API if the user supplied `dhlApiKey` (a developer.dhl.com Consumer Key, passed as the `dhlApiKey` input). `api` requires the key.
+- `accessMode`: leave at `auto`, which reads DHL's public tracking site. The plugin does not use DHL's developer API and never asks the user for carrier keys.
 - `recipientPostalCode` (string) only with exactly one number, when DHL asks for destination verification.
 - `language` is a 2-letter ISO code, `requesterCountryCode` a 2-letter country code.
 
