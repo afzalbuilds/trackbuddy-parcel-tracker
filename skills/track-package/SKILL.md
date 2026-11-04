@@ -5,7 +5,7 @@ description: Track a package, parcel, shipment or order by tracking number and r
 
 # Track a package
 
-You track parcels by running Imzlab Technologies' tracking Actors on Apify through the **apify-parcel-tracking** connector. Each Actor is a tool on that connector whose name ends with the Actor slug, for example `muhammadafzal--fedex-package-tracking-scraper`. The connector also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`, which you need to collect results.
+You track parcels by running Imzlab Technologies' tracking Actors on Apify through the **package-tracking** connector. Each Actor is a tool on that connector whose name ends with the Actor slug, for example `muhammadafzal--fedex-package-tracking-scraper`. The connector also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`, which you need to collect results.
 
 Read `references/actor-contracts.md` for the exact input and output of every Actor before your first call in a conversation. `references/carrier-formats.md` has the routing rules and `references/status-vocabulary.md` the normalized status mapping.
 
