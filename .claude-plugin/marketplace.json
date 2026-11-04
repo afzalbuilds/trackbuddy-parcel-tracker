@@ -1,0 +1,17 @@
+{
+  "name": "imzlab",
+  "owner": {
+    "name": "Imzlab Technologies",
+    "email": "info@imzlab.com"
+  },
+  "description": "Imzlab Technologies plugins for Claude: package tracking.",
+  "plugins": [
+    {
+      "name": "trackbuddy-parcel-tracker",
+      "source": "./",
+      "description": "Package Tracker: DHL, FedEx, UPS, USPS and 1,000+ carriers via 17TRACK, inside Claude. Pay per record on Apify.",
+      "category": "productivity",
+      "tags": ["package tracking", "parcel tracking", "dhl", "fedex", "ups", "17track", "logistics", "ecommerce"]
+    }
+  ]
+}
