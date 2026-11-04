@@ -10,7 +10,7 @@ Run options (`memory`, `timeout`, `maxTotalChargeUsd`) go in the tool's `callOpt
 
 - Not-found, blocked, invalid and failed numbers never produce a dataset row. They are counted and explained in the key-value record named below.
 - Lookups run one at a time inside a run; allow 10 to 60 seconds per number.
-- Do not pass proxy settings; every Actor manages its own access.
+- Send only the fields listed below in `input`. Every Actor handles its own network routing internally, so no other fields are needed.
 
 ---
 
@@ -30,7 +30,7 @@ Input:
 }
 ```
 - Always send `demoMode: false` for real numbers. DHL's sample number `7777777770` with `demoMode: true` returns a labelled demo record; mixing it with real numbers rejects the run.
-- `accessMode`: leave at `auto`, which reads DHL's public tracking site. The plugin does not use DHL's developer API and never asks the user for carrier keys.
+- `accessMode`: leave at `auto`, which reads DHL's public tracking site.
 - `recipientPostalCode` (string) only with exactly one number, when DHL asks for destination verification.
 - `language` is a 2-letter ISO code, `requesterCountryCode` a 2-letter country code.
 
@@ -42,7 +42,7 @@ Key-value record `SUMMARY`: `outcome` (`data` | `demo` | `empty` | `blocked` | `
 
 ## FedEx: `fedex-package-tracking-scraper`
 
-Price: USD 0.020 per record (GOLD 0.017), start USD 0.005 per started GB (default memory 1 GB, so one event). Max 30 numbers per run. About 6 to 10 s per number; pass `callOptions.timeout: 900` for more than 15 numbers.
+Price: USD 0.020 per record (GOLD 0.017), start USD 0.005 per started GB (default memory 1 GB, so one event). Max 30 numbers per run. About 6 to 10 s per number; set `callOptions.timeout` to 900 for more than 15 numbers.
 
 Input:
 ```json
@@ -65,7 +65,7 @@ Data-quality rule: if `status` is the literal word `Status`, or `ship_date` is `
 
 ## UPS: `ups-package-tracking-scraper`
 
-Price: USD 0.030 per record (GOLD 0.022), start USD 0.005 per started GB (default 512 MB, one event). Max 25 numbers per run. 10 to 60 s per number, plus retries; pass `callOptions.timeout: 900` for more than 10 numbers.
+Price: USD 0.030 per record (GOLD 0.022), start USD 0.005 per started GB (default 512 MB, one event). Max 25 numbers per run. 10 to 60 s per number, plus retries; set `callOptions.timeout` to 900 for more than 10 numbers.
 
 Input:
 ```json
@@ -75,7 +75,7 @@ Input:
   "requestTimeoutSecs": 45
 }
 ```
-- `locale` is `language_COUNTRY`, for example `en_GB`, and also selects the proxy country.
+- `locale` is `language_COUNTRY`, for example `en_GB`, and also selects which regional 17TRACK site is read.
 
 Dataset row (camelCase): `trackingNumber`, `carrier` ("UPS"), `status` (`pre_advice` | `accepted` | `in_transit` | `out_for_delivery` | `delayed` | `delivery_attempted` | `ready_for_pickup` | `delivered` | `returned` | `exception` | `unknown`), `statusText`, `terminal`, `delivered`, `delayed`, `estimatedDelivery` (free text such as "Friday, October 23 by 7:00 P.M."), `lastEvent` (`{text, location}` or null), `deliveredTo`, `receivedBy`, `sourceUrl`, `scrapedAt`. No event history.
 
@@ -125,7 +125,7 @@ Input:
   "requestTimeoutSecs": 25
 }
 ```
-- `carrier`: `auto` | `USPS` | `UPS` | `FedEx`. Pass the carrier explicitly; `auto` rejects unrecognized formats as `ambiguous_carrier`.
+- `carrier`: `auto` | `USPS` | `UPS` | `FedEx`. Give the carrier explicitly; `auto` rejects unrecognized formats as `ambiguous_carrier`.
 
 Dataset row (camelCase): `trackingNumber`, `carrier`, `status` (same enum as the UPS Actor), `statusText`, `terminal`, `delivered`, `delayed`, `estimatedDelivery`, `actualDelivery` (free text such as `12/05/2025 10:29 A.M.`), `service`, `origin` and `destination` (`{city, stateOrProvince, postalCode, country}` or null), `lastEvent` (`{timestamp, status, description, location}`), `events[]` (same shape, newest first), `sourceUrl`, `scrapedAt`.
 
