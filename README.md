@@ -31,7 +31,7 @@ Not supported: Amazon TBA numbers (Amazon does not expose them publicly), proof-
 ## How to set it up
 
 1. Install the plugin from the Claude directory (claude.ai > Customize > Plugins) or in Claude Code with `claude plugin install trackbuddy-parcel-tracker@imzlab` after adding the marketplace `afzalbuilds/trackbuddy-parcel-tracker`.
-2. Open the plugin's **Connectors** tab and connect **Apify**. A browser window opens so you can sign in or create a free Apify account. Free accounts include monthly usage credit, so you can try the tracker without adding a card. If you already use the Apify connector from the Claude directory, the plugin reuses that connection.
+2. Open the plugin's **Connectors** tab and connect **Apify**. A browser window opens so you can sign in or create a free Apify account. Free accounts include monthly usage credit, so you can try the tracker without adding a card.
 3. Ask Claude to track a number.
 
 In Claude Code, `/mcp` shows the connection state and `/trackbuddy-parcel-tracker:track <numbers>` runs a lookup directly.

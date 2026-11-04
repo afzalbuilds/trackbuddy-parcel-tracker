@@ -5,7 +5,7 @@ description: Track a package, parcel, shipment or order by tracking number and r
 
 # Track a package
 
-You track parcels by running Imzlab Technologies' tracking Actors on Apify through the plugin's **Apify** connector (the official Apify MCP server). Run an Actor with the connector's `call-actor` tool, giving `actor` as the Actor's full name, for example `muhammadafzal/fedex-package-tracking-scraper`, and `input` from the contract file. The connector also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`, which you need to collect results. Do not call `search-actors` or `fetch-actor-details` first: the five Actor names and their input schemas are in the contract file.
+You track parcels by running Imzlab Technologies' tracking Actors on Apify through the **apify-parcel-tracking** connector. Each Actor is a tool on that connector whose name ends with the Actor slug, for example `muhammadafzal--fedex-package-tracking-scraper`. The connector also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`, which you need to collect results.
 
 Read `references/actor-contracts.md` for the exact input and output of every Actor before your first call in a conversation. `references/carrier-formats.md` has the routing rules and `references/status-vocabulary.md` the normalized status mapping.
 
@@ -19,7 +19,7 @@ Read `references/actor-contracts.md` for the exact input and output of every Act
 
 4. **Estimate the cost** from the price table in `references/actor-contracts.md`. For 1 to 10 numbers, run immediately and report the cost afterwards. For more than 10 numbers, or an estimate above USD 0.50, show the estimate first and run only after the user confirms. For a long list, prefer the `bulk-tracking-report` skill.
 
-5. **Run the Actors.** Call `call-actor` once per run with `actor` set to the full Actor name, `input` in the shape from the contract file, `waitSecs: 45`, and run options such as `timeout` in `callOptions`. Runs for different Actors can start in parallel. Always set `demoMode: false` for DHL unless the user explicitly asks for the DHL demo. Set `callOptions.timeout` to 900 seconds for FedEx runs over 15 numbers and UPS runs over 10 numbers.
+5. **Run the Actors.** Call each Actor tool with the input shape from the contract file. Runs for different Actors can start in parallel. Always pass `demoMode: false` to DHL unless the user explicitly asks for the DHL demo. Pass a run `timeout` of 900 seconds for FedEx runs over 15 numbers and UPS runs over 10 numbers.
 
 6. **Wait for every run to finish.** A tool response with status `RUNNING` or `READY` is not a result. Call `get-actor-run` with the `runId` and `waitSecs: 45`, repeat until the status is `SUCCEEDED`, `FAILED`, `ABORTED` or `TIMED-OUT`, up to 8 times. Never report a run as done while it is still running, and never invent a status.
 
@@ -42,7 +42,7 @@ Keep the carrier's own wording for the status text and add the normalized status
 
 ## When things go wrong
 
-- The Apify connector is not connected or the tool call returns an authorization error: tell the user to open the plugin's Connectors tab and connect Apify (free account), then retry. If they already use the Apify connector from the Claude directory, that connection is the same one.
+- The connector is not connected or the tool call returns an authorization error: tell the user to open the plugin's Connectors tab and connect Apify (free account), then retry.
 - The run reports `charge_limit` or `chargeLimitReached`: the user's Apify max charge per run was hit; report which numbers were skipped and suggest raising the limit in Apify Console or splitting the batch.
 - The run reports `provider_unavailable`, `BLOCKED` for every number, or `source_failure`: the carrier blocked the lookup; report it plainly, charge is zero for those numbers, and offer to retry once or use a different tracker (17TRACK can often track a UPS, FedEx or DHL number too).
 - Multi-carrier must never be used for USPS or standard FedEx numbers (12 or 15 digits); it only supports UPS and FedEx International Connect. Route USPS to 17TRACK and standard FedEx to the FedEx Actor.

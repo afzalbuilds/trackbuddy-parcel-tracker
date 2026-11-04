@@ -2,9 +2,9 @@
 
 Verified against live runs on 2026-11-03. Prices are Apify Store pay-per-event prices on the FREE tier; paid Apify plans are 2.5 to 20 percent lower. Only records written to the dataset are charged; every run also charges one start event per started GB of memory.
 
-All Actors belong to Apify user `muhammadafzal`. Run one with the Apify connector's `call-actor` tool: `actor` is the full name, for example `muhammadafzal/dhl-package-tracking-scraper`, and `input` is the JSON shown for that Actor below. The tool returns the run (`runId`, `status`, `storages.datasets.default.id`, `storages.keyValueStores.default.id`), not the rows. If the response already includes dataset items, use them; otherwise fetch them with `get-dataset-items`.
+All Actors belong to Apify user `muhammadafzal`. On the connector, the tool name is the Actor ID with `/` replaced by `--`, for example `muhammadafzal--dhl-package-tracking-scraper`. Each tool returns the run (`runId`, `status`, `storages.datasets.default.id`, `storages.keyValueStores.default.id`), not the rows. If a tool response already includes dataset items, use them; otherwise fetch them with `get-dataset-items`.
 
-Run options (`memory`, `timeout`, `maxTotalChargeUsd`) go in `call-actor`'s `callOptions`, never inside `input`.
+Run options (`memory`, `timeout`, `maxTotalChargeUsd`) go in the tool's `callOptions`, never inside `input`.
 
 ## Shared rules
 

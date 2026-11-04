@@ -15,7 +15,7 @@ Builds on the `track-package` skill: read its `references/actor-contracts.md`, `
 
 3. **Quote before running.** Show a one-line plan: "N numbers: a FedEx (b runs), c UPS (d runs), e DHL (f runs), g other via 17TRACK (h runs). Estimated Apify cost about USD X, roughly Y minutes." Wait for the user's go-ahead when there are more than 10 numbers or the estimate exceeds USD 0.50. For more than 100 numbers, suggest doing it in chunks of 100 so results arrive sooner.
 
-4. **Run.** Start runs for different Actors in parallel. Start up to 3 runs of the same Actor at a time; start the next when one finishes. Set `callOptions.timeout` to 900 for FedEx runs over 15 numbers and UPS runs over 10. Poll each run with `get-actor-run` (`waitSecs: 45`) until it is terminal. Tell the user you are waiting if it takes longer than a minute; never report partial results as final without saying so.
+4. **Run.** Start runs for different Actors in parallel. Start up to 3 runs of the same Actor at a time; start the next when one finishes. Pass `callOptions.timeout: 900` for FedEx runs over 15 numbers and UPS runs over 10. Poll each run with `get-actor-run` (`waitSecs: 45`) until it is terminal. Tell the user you are waiting if it takes longer than a minute; never report partial results as final without saying so.
 
 5. **Collect and reconcile** every run: dataset rows plus the `SUMMARY`/`OUTPUT` record, as in `track-package`. Every input number appears exactly once in the report. Rerun numbers that a 17TRACK run marked `skipped` or that a run left `notStarted`, up to one extra pass, and report any that still have no result.
 

@@ -1,6 +1,6 @@
 # Carrier detection and routing
 
-Normalize first: trim, remove inner spaces and hyphens, uppercase. Then test the rules in order; the first match wins. "Actor" names the Actor to run with `call-actor` (full name `muhammadafzal/<Actor>`).
+Normalize first: trim, remove inner spaces and hyphens, uppercase. Then test the rules in order; the first match wins. "Actor" names the connector tool to call.
 
 | # | Pattern (regex) | Carrier | Actor | Notes |
 |---|---|---|---|---|
