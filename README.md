@@ -55,7 +55,7 @@ Before any batch over 10 numbers, Claude tells you the estimated cost and asks b
 - Tracking numbers you give Claude are sent to Apify's hosted MCP server (`mcp.apify.com`), which runs the tracking Actor on your Apify account. The Actor queries the carrier's public tracking page.
 - Results are stored in your Apify account's datasets for your plan's retention period, where you can download them as CSV, Excel or JSON. The plugin stores nothing itself and sends nothing to any other service.
 - Tracking records can include delivery addresses and recipient names shown on the carrier's public page. Treat them as personal data.
-- You authorize Apify through OAuth. The plugin never sees or stores your Apify token.
+- You authorize Apify through OAuth in the plugin's Connectors tab. The plugin itself holds no Apify account details.
 - Full policy: https://imzlab.com/privacy#package-tracker. Terms: https://imzlab.com/terms#package-tracker. Support: https://imzlab.com/support#package-tracker
 
 ## Frequently asked questions
