@@ -82,15 +82,13 @@ hermes plugins install afzalbuilds/trackbuddy-parcel-tracker --no-enable
 hermes plugins enable trackbuddy-parcel-tracker
 ```
 
-The package declares the tracking server, but Hermes signs in to a remote server only when your own configuration asks for it. Register the server under the same name with browser sign-in, so Hermes uses your Apify account for it:
+The package declares the tracking server, but Hermes signs in to a remote server only when your own configuration asks for it. Register the server under the same name with browser sign-in, so Hermes uses your Apify account for it. Run this in a terminal, not from a script, because Hermes starts the sign-in only when it can talk to you:
 
 ```bash
 hermes mcp add package-tracking --auth oauth --url "https://mcp.apify.com/?tools=muhammadafzal/17track-package-tracking-scraper,muhammadafzal/dhl-package-tracking-scraper,muhammadafzal/fedex-package-tracking-scraper,muhammadafzal/ups-package-tracking-scraper,muhammadafzal/multi-carrier-package-tracking,muhammadafzal/amazon-shipping-tracking-scraper,muhammadafzal/gofo-package-tracking-scraper,muhammadafzal/spx-express-package-tracking-scraper,muhammadafzal/maersk-container-tracking-scraper"
 ```
 
-```bash
-hermes mcp login package-tracking
-```
+Hermes opens Apify's consent page in your browser. After you allow access it lists the 13 tools (the nine trackers plus the run, dataset and record tools); press Enter to enable them all. `hermes mcp test package-tracking` confirms the connection, and `hermes mcp login package-tracking` signs in again later if the access is ever revoked.
 
 Every lookup is a paid Actor run on your Apify account, so the package marks the server `untrusted`: Hermes asks before each tracking call and refuses them in unattended runs. Your own server entry replaces the package's entry, including that setting; add `trust: untrusted` under `mcp_servers.package-tracking` in `~/.hermes/config.yaml` to keep the prompts.
 
@@ -168,4 +166,4 @@ Hermes Agent loads the skills and the tracking server; it has no equivalent for 
 
 Source: https://github.com/afzalbuilds/trackbuddy-parcel-tracker. Issues and feature requests: https://github.com/afzalbuilds/trackbuddy-parcel-tracker/issues. The Actors are published on Apify Store by Imzlab Technologies under the `muhammadafzal` account.
 
-Last verified: 2026-11-13.
+Last verified: 2026-11-13. Tested on Hermes Agent 0.23.1 and with Grok Build's plugin validator.

@@ -1,7 +1,7 @@
 {
   "name": "trackbuddy-parcel-tracker",
   "displayName": "Package Tracker: DHL, FedEx, UPS, USPS & 17TRACK",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Track packages in Claude: DHL, FedEx, UPS, Amazon Shipping, GOFO, SPX and 1,000+ carriers via 17TRACK (USPS, China Post, YunExpress, Cainiao, Royal Mail), plus Maersk containers. Paste tracking numbers, get status, ETA and scan history. Pay per record on your Apify account, no carrier API keys.",
   "author": {
     "name": "Imzlab Technologies",

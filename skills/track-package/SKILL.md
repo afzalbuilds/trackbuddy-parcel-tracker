@@ -5,7 +5,7 @@ description: Track a package, parcel, shipment or order by tracking number and r
 
 # Track a package
 
-You track parcels by running Imzlab Technologies' tracking Actors on Apify through the **package-tracking** MCP server (some apps call it a connector). Each Actor is a tool on that server whose name contains the Actor slug, for example `muhammadafzal--fedex-package-tracking-scraper`; depending on the app, the tool name may carry a server prefix or use underscores in place of hyphens, so match on the slug. The server also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`, which you need to collect results.
+You track parcels by running Imzlab Technologies' tracking Actors on Apify through the **package-tracking** MCP server (some apps call it a connector). Each Actor is a tool on that server whose name contains the Actor slug, for example `muhammadafzal--fedex-package-tracking-scraper`; depending on the app, the tool name may carry a server prefix, use underscores in place of hyphens, or be shortened with a suffix, so match on the start of the slug. The server also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`, which you need to collect results.
 
 Read `references/actor-contracts.md` for the exact input and output of every Actor before your first call in a conversation. `references/carrier-formats.md` has the routing rules and `references/status-vocabulary.md` the normalized status mapping.
 
@@ -38,7 +38,7 @@ Ocean containers and bills of lading (Maersk) have their own skill, `track-conta
 
 ## Answer format
 
-Give one table with these columns: Tracking number, Carrier, Status, Last update (time and location), ETA or delivered time, Notes. Put exceptions, delays and not-found numbers at the top. Then one line: "Apify cost: about USD X for N records in M runs, billed to your Apify account." Then, only if the user asked for history or there is a single package, list the events newest first, each as time, location, description.
+Give one table with these columns: Tracking number, Carrier, Status, Last update (time and location), ETA or delivered time, Notes. Put exceptions, delays and not-found numbers at the top. Then one line: "Apify cost: about USD X for N records in M runs, billed to your Apify account." Work the cost out from the price table in `references/actor-contracts.md` (runs × start fee + charged records × per-record price). Never quote the usage or cost figures that a run response carries: they are Apify's internal platform usage, not what the lookup is billed at. Then, only if the user asked for history or there is a single package, list the events newest first, each as time, location, description.
 
 Keep the carrier's own wording for the status text and add the normalized status in parentheses when they differ, for example "Out For Delivery Today (out for delivery)". Give times exactly as the carrier reports them and say when they are UTC (Amazon, SPX, GOFO's `…Utc` fields); do not convert time zones unless the user asks. Do not paste raw JSON. Do not show `receivedBy` names, Amazon's `shipperName` or SPX's `clientOrderId` unless the user asks for them.
 

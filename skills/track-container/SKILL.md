@@ -5,7 +5,7 @@ description: Track Maersk ocean freight by container number, bill of lading or b
 
 # Track a Maersk container
 
-You track Maersk ocean shipments by running the `maersk-container-tracking-scraper` Actor on Apify through the **package-tracking** MCP server (some apps call it a connector). The tool name contains the Actor slug, `muhammadafzal--maersk-container-tracking-scraper`, possibly with a server prefix or underscores in place of hyphens. The server also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`.
+You track Maersk ocean shipments by running the `maersk-container-tracking-scraper` Actor on Apify through the **package-tracking** MCP server (some apps call it a connector). The tool name contains the Actor slug, `muhammadafzal--maersk-container-tracking-scraper`, possibly with a server prefix, underscores in place of hyphens, or shortened with a suffix. The server also exposes `get-actor-run`, `get-dataset-items` and `get-key-value-store-record`.
 
 Read the Maersk section of `../track-package/references/actor-contracts.md` before the first call, and the "Ocean freight" section of `../track-package/references/carrier-formats.md` for which numbers to accept. Parcels and courier shipments belong to the `track-package` skill.
 
@@ -27,7 +27,7 @@ Read the Maersk section of `../track-package/references/actor-contracts.md` befo
 
 One table: Number, Type (container, B/L or booking), Status (Maersk's event name), Latest event (local time, location, terminal, vessel and voyage), Next planned event (with its estimated time), Route (origin → destination), Arrival date, Notes. Put delayed and cancelled shipments first. For a bill of lading with several containers, add one sub-row per container with its type and latest event.
 
-Then one line: "Apify cost: about USD X for N shipments in M runs, billed to your Apify account."
+Then one line: "Apify cost: about USD X for N shipments in M runs, billed to your Apify account." Work it out as runs × USD 0.005 + shipments found × USD 0.008. Never quote the usage or cost figures that a run response carries: they are Apify's internal platform usage, not what the lookup is billed at.
 
 Rules:
 - `arrivalDate` and every planned event are Maersk's estimates; call them "estimated" until the event has happened.

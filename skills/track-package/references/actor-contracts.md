@@ -2,7 +2,7 @@
 
 Verified against the live Actors on 2026-11-13. Prices are Apify Store pay-per-event prices on the FREE tier; paid Apify plans are 2.5 to 20 percent lower. Only charged records are billed; every run also charges one start event per started GB of memory.
 
-All Actors belong to Apify user `muhammadafzal`. On the package-tracking MCP server, the tool name is the Actor ID with `/` replaced by `--`, for example `muhammadafzal--dhl-package-tracking-scraper`. Some apps add a server prefix or turn hyphens into underscores; match on the Actor slug. Each tool returns the run (`runId`, `status`, `storages.datasets.default.id`, `storages.keyValueStores.default.id`), not the rows. If a tool response already includes dataset items, use them; otherwise fetch them with `get-dataset-items`.
+All Actors belong to Apify user `muhammadafzal`. On the package-tracking MCP server, the tool name is the Actor ID with `/` replaced by `--`, for example `muhammadafzal--dhl-package-tracking-scraper`. Some apps add a server prefix, turn hyphens into underscores, or shorten a long name and add a suffix; match on the start of the Actor slug. Each tool returns the run (`runId`, `status`, `storages.datasets.default.id`, `storages.keyValueStores.default.id`), not the rows. If a tool response already includes dataset items, use them; otherwise fetch them with `get-dataset-items`.
 
 Run options (`memory`, `timeout`, `maxTotalChargeUsd`) go in the tool's `callOptions`, never inside `input`.
 
@@ -255,4 +255,4 @@ cost = runs × start fee + charged records × per-record price.
 
 Examples on the FREE tier: 1 UPS number ≈ USD 0.035; 10 DHL numbers ≈ USD 0.20; 30 FedEx numbers ≈ USD 0.605; 25 UPS numbers ≈ USD 0.755; 10 17TRACK numbers ≈ USD 0.395; 100 Amazon Shipping packages ≈ USD 1.505; 500 GOFO shipments ≈ USD 5.005; 500 SPX parcels ≈ USD 2.505; 20 Maersk containers ≈ USD 0.165; 100 mixed numbers (40 FedEx, 30 UPS, 20 DHL, 10 USPS via 17TRACK) ≈ USD 0.805 + 0.905 + 0.40 + 0.395 ≈ USD 2.51.
 
-Quote costs as "about", because not-found numbers are not charged and the user's Apify plan tier may be discounted.
+Quote costs as "about", because not-found numbers are not charged and the user's Apify plan tier may be discounted. Always compute the figure from the prices in this file. A run response can include usage or cost fields (for example `usageTotalUsd`); those are Apify's internal platform usage and are far lower than the billed price, so never report them as the cost.

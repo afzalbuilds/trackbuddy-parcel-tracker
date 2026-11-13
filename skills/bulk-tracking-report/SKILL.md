@@ -31,6 +31,7 @@ Builds on the `track-package` skill: read its `references/actor-contracts.md`, `
 
 ## Rules
 
+- The total Apify cost in the summary comes from the price table in `actor-contracts.md`, never from usage or cost fields in a run response.
 - Never fabricate a status. A number with no result shows "not found", "blocked" or "not attempted" with the Actor's message.
 - Sort "Action needed" by severity: exception, delivery attempted, returned, delayed, not found, blocked.
 - For Maersk containers use the columns from the `track-container` skill (vessel, next planned event, arrival date) in a separate table; do not force ocean shipments into the parcel table.
