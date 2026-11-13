@@ -28,13 +28,21 @@ Every result is reported with one of these normalized statuses, in addition to t
 
 **17TRACK** `statusCategory`: `info_received` → pre_transit; `in_transit` → in_transit; `pickup` → ready_for_pickup; `out_for_delivery` → out_for_delivery; `undelivered` → delivery_attempted; `delivered` → delivered; `alert` → exception; `expired` → expired; `not_found` → not_found; `unknown` → unknown. When `statusCategory` is unknown but `status` text is in another language, classify from the text if you can, else unknown.
 
-**Key-value warnings** (numbers without a row): category `not_found` or `empty` → not_found; `blocked` → blocked; `invalid_input` → report "invalid number" and do not count it as a lookup; `failed` → unknown with the message; `charge_limit`, `skipped`, `notStarted` → "not attempted (limit reached)", offer to rerun.
+**Amazon Shipping**: first look at `lookupStatus`. `NOT_FOUND` → not_found; `HISTORY_EXPIRED` → delivered when `deliveredAt` is set (note "scan history no longer available"), else expired. For `FOUND` rows map `status`: `LABEL_CREATED` → pre_transit; `IN_TRANSIT` → in_transit, or delayed when `isDelayed` is true; `OUT_FOR_DELIVERY` → out_for_delivery; `AVAILABLE_FOR_PICKUP` → ready_for_pickup; `DELIVERED` → delivered; `DELIVERY_FAILED` → delivery_attempted; `RETURNING`, `RETURNED` → returned; `CANCELLED`, `EXCEPTION` → exception; `UNKNOWN` → unknown.
+
+**GOFO** `statusCategory`: `label_created` → pre_transit; `in_transit` → in_transit; `out_for_delivery` → out_for_delivery; `delivered` → delivered; `exception` → exception; `returned` → returned; `unknown` → unknown.
+
+**SPX Express** `status`: `PREPARING_TO_SHIP` → pre_transit; `IN_TRANSIT` → in_transit; `OUT_FOR_DELIVERY` → out_for_delivery; `DELIVERED` → delivered; `DELIVERY_UNSUCCESSFUL` → delivery_attempted (add `lastFailureReason` to the note); `RETURNED_TO_SENDER` → returned; `LOST` → exception; `OTHER` → unknown, with `statusLabel` as the text.
+
+**Maersk** `shipmentStatus` (ocean freight, so the parcel words fit loosely; always show Maersk's own event name): `Empty container return` → delivered; `Gate out for delivery` → out_for_delivery; any other event → in_transit, or delayed when `arrivalDate` is in the past and the latest event is not `Discharge` or later. A number in `cancelled[]` → exception ("shipment cancelled by Maersk").
+
+**Key-value warnings** (numbers without a row): category `not_found` or `empty` → not_found; `blocked` → blocked; `invalid_input` → report "invalid number" and do not count it as a lookup; `failed` → unknown with the message; `charge_limit`, `skipped`, `notStarted`, `not_started`, `notChecked`, `notLookedUp`, `noResultsUnconfirmed`, `numbersSkippedByFreePlan` → "not attempted", offer to rerun; `no_events` (SPX) → pre_transit with the note "known to SPX, no scans yet"; `unsupported_country` or `invalid_format` (SPX) → report the Actor's message and offer 17TRACK instead. GOFO, SPX and Maersk list plain numbers (`notFound[]`, `numbers[]`), not masked warnings.
 
 ## Shared result schema
 
 ```
 trackingNumber      string   as requested (normalized)
-carrier             string   DHL | FedEx | UPS | USPS | <17TRACK carrier name> | unknown
+carrier             string   DHL | FedEx | UPS | USPS | Amazon Shipping | GOFO | SPX Express | Maersk | <17TRACK carrier name> | unknown
 status              string   normalized value from the table above
 statusText          string   carrier wording
 lastEvent           object   { time, description, location } or null

@@ -1,0 +1,37 @@
+{
+  "name": "trackbuddy-parcel-tracker",
+  "version": "1.1.0",
+  "description": "Track packages from your AI agent: DHL, FedEx, UPS, Amazon Shipping, GOFO, SPX and 1,000+ carriers via 17TRACK (USPS, China Post, YunExpress, Cainiao, Royal Mail), plus Maersk containers. Paste tracking numbers, get status, ETA and scan history. Pay per record on your Apify account, no carrier API keys.",
+  "author": {
+    "name": "Imzlab Technologies",
+    "email": "info@imzlab.com",
+    "url": "https://imzlab.com"
+  },
+  "homepage": "https://github.com/afzalbuilds/trackbuddy-parcel-tracker#readme",
+  "repository": "https://github.com/afzalbuilds/trackbuddy-parcel-tracker",
+  "license": "MIT",
+  "keywords": [
+    "package tracking",
+    "parcel tracking",
+    "track package",
+    "dhl tracking",
+    "fedex tracking",
+    "ups tracking",
+    "usps tracking",
+    "17track",
+    "amazon shipping tracking",
+    "shipment tracking",
+    "bulk tracking",
+    "delivery status",
+    "logistics",
+    "ecommerce",
+    "customer support",
+    "tba tracking",
+    "gofo tracking",
+    "spx tracking",
+    "shopee express",
+    "maersk container tracking",
+    "container tracking",
+    "apify"
+  ]
+}

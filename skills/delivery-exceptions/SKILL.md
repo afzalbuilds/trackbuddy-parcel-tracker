@@ -34,6 +34,12 @@ If the shipment has not been tracked in this conversation yet, run the `track-pa
 
 Give the carrier's official tracking URL from the result for every recommendation so the user can act on it.
 
+Carrier-specific notes:
+- **Amazon Shipping / Multi-Channel Fulfillment**: the merchant, not the recipient, opens the case with Amazon (Amazon Shipping support, or Seller Central for MCF). `deliveryLocation` says where the driver left the parcel and `proofOfDeliveryPhoto: true` means the merchant can request the photo from Amazon.
+- **SPX Express (Shopee)**: `lastFailureReason` and `failedDeliveryAttempts` say why and how often delivery failed. Buyers resolve it in the Shopee app (return/refund window); sellers through Shopee Seller Centre.
+- **GOFO**: contact GOFO support with the waybill number (`GF…`); the shipper files claims.
+- **Maersk ocean freight**: a missed `arrivalDate`, a rolled vessel or a long gap before `Gate out for delivery` usually means port congestion, a customs hold or unpaid charges. The consignee or forwarder checks demurrage and detention free time and contacts Maersk customer service or the forwarder with the B/L number. Do not quote free-time days; they depend on the contract.
+
 ## 3. Draft the message when asked
 
 Write in the user's voice, short and factual:
