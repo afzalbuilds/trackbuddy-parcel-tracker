@@ -102,6 +102,10 @@ Any MCP client can use the trackers directly by adding this URL as a remote (str
 https://mcp.apify.com/?tools=muhammadafzal/17track-package-tracking-scraper,muhammadafzal/dhl-package-tracking-scraper,muhammadafzal/fedex-package-tracking-scraper,muhammadafzal/ups-package-tracking-scraper,muhammadafzal/multi-carrier-package-tracking,muhammadafzal/amazon-shipping-tracking-scraper,muhammadafzal/gofo-package-tracking-scraper,muhammadafzal/spx-express-package-tracking-scraper,muhammadafzal/maersk-container-tracking-scraper
 ```
 
+## n8n workflow templates
+
+Two ready-made n8n workflows use the same tracking Actors: a form that tracks one package, and a daily Google Sheets check that emails delivery exceptions. Import the JSON files from the [n8n folder](n8n/README.md); they need the Apify node for n8n and your own Apify account.
+
 ## Pricing
 
 The plugin itself is free. Each tracked record is billed by Apify on your account at the Actor's pay-per-event price. Prices below are the Apify Store prices on the FREE tier as of 2026-11-13. Paid Apify plans get a discount, and blocked or not-found numbers are never charged as records.

@@ -1,0 +1,190 @@
+{
+  "name": "Track a package from a form with 17TRACK and Apify",
+  "nodes": [
+    {
+      "id": "fd10b0c1-8c99-48f9-9c01-bb9450945f4b",
+      "name": "Receive tracking request",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        96
+      ],
+      "parameters": {
+        "formTitle": "Track a package",
+        "formDescription": "Enter a tracking number from USPS or any of 1,000+ postal and cross-border carriers. The lookup takes up to a minute.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Tracking number",
+              "fieldType": "text",
+              "placeholder": "e.g. RB123456789CN",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "buttonLabel": "Track package"
+        }
+      },
+      "webhookId": "3badf673-9afa-4544-a82b-00c662e69f54"
+    },
+    {
+      "id": "f67a6887-a8eb-4e72-9f07-c87e5644d1b7",
+      "name": "Look up package on 17TRACK",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 2,
+      "position": [
+        224,
+        96
+      ],
+      "parameters": {
+        "resource": "Actors",
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "muhammadafzal~17track-package-tracking-scraper"
+        },
+        "actorInputMode": "json",
+        "customBody": "={{ JSON.stringify({ trackingNumbers: [$json[\"Tracking number\"].trim()], language: \"en\", carrier: 0 }) }}",
+        "timeout": 150,
+        "memory": 512,
+        "maxTotalChargeUsd": 0.1,
+        "authentication": "apifyApi"
+      },
+      "notes": "Runs the Apify Actor muhammadafzal/17track-package-tracking-scraper. Numbers that are not found return no row, so this node always outputs an item and the next node routes the empty case.",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "f308d9b4-0b8b-4a8c-ae19-10807449b525",
+      "name": "Package found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        96
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.trackingNumber }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "rightValue": ""
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "b1d93b59-3f6a-4672-a62f-5d9ac72e16d7",
+      "name": "Show tracking status",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        672,
+        0
+      ],
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "text",
+        "completionTitle": "={{ $json.statusDescription || $json.status }}",
+        "completionMessage": "=Tracking number: {{ $json.trackingNumber }}\nCarrier: {{ ($json.carriers || []).join(\", \") || \"Unknown\" }}\nStatus: {{ $json.statusCategory }}\nLatest update: {{ $json.latestEvent?.description || \"No scan yet\" }}{{ $json.latestEvent?.location ? \" (\" + $json.latestEvent.location + \")\" : \"\" }}\nUpdated: {{ $json.latestEvent?.timestamp || \"n/a\" }}\nEstimated delivery: {{ $json.estimatedDelivery || \"Not provided by the carrier\" }}\nFull history: {{ $json.sourceUrl }}"
+      },
+      "webhookId": "cd90a127-032b-46dd-aa65-3f89f0e7138e"
+    },
+    {
+      "id": "b7a78d27-b4fb-46c6-8d1e-9a6bddf5da96",
+      "name": "Show not-found message",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        672,
+        192
+      ],
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "text",
+        "completionTitle": "No tracking data found",
+        "completionMessage": "=We could not find tracking data for {{ $(\"Receive tracking request\").item.json[\"Tracking number\"] }}. Check the number for typos, or try again later: new shipments can take a day to appear, and carriers sometimes hold automated lookups."
+      },
+      "webhookId": "362465fc-e0aa-457f-a6d7-8b64a2d5a448"
+    },
+    {
+      "id": "3b8d5f62-49e0-4b5e-9b1a-9d5b4abfc5e5",
+      "name": "Sticky Note 682d30d3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        192,
+        0
+      ],
+      "parameters": {
+        "content": "### Setup\nConnect your Apify account in this node. Cost is about USD 0.04 per package found; not-found numbers are not charged.",
+        "color": 7,
+        "width": 160,
+        "height": 224
+      }
+    }
+  ],
+  "connections": {
+    "Receive tracking request": {
+      "main": [
+        [
+          {
+            "node": "Look up package on 17TRACK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Look up package on 17TRACK": {
+      "main": [
+        [
+          {
+            "node": "Package found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Package found?": {
+      "main": [
+        [
+          {
+            "node": "Show tracking status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Show not-found message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

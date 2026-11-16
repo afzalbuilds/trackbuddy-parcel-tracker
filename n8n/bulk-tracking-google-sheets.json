@@ -1,0 +1,456 @@
+{
+  "name": "Track shipments from Google Sheets daily and email delivery exceptions",
+  "nodes": [
+    {
+      "id": "e2b7fec6-7c55-44fb-b84d-f15ff43211d5",
+      "name": "Run every morning",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        240
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 8,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "c961bcac-e6f6-41f0-ad56-4e90ae5c71d6",
+      "name": "Read shipments sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        272,
+        368
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "authentication": "oAuth2",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "Shipments tracker"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Shipments"
+        }
+      }
+    },
+    {
+      "id": "173376b1-0ebb-49b5-be0d-432cc3d279d9",
+      "name": "Keep undelivered shipments",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.4,
+      "position": [
+        496,
+        368
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json[\"Tracking number\"] }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "rightValue": ""
+            },
+            {
+              "leftValue": "={{ $json.Status || \"\" }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              },
+              "rightValue": "delivered"
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true
+      }
+    },
+    {
+      "id": "62a2a60e-799a-4a4e-8998-02da79a12e99",
+      "name": "Collect batch numbers",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        144
+      ],
+      "parameters": {
+        "aggregate": "aggregateIndividualFields",
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "Tracking number",
+              "renameField": true,
+              "outputFieldName": "trackingNumbers"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "deb5df4b-6c80-4c5c-a1f2-1329177392ea",
+      "name": "Track batch on 17TRACK",
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        144
+      ],
+      "parameters": {
+        "resource": "Actors",
+        "operation": "Run actor and get dataset",
+        "actorSource": "store",
+        "actorId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "muhammadafzal~17track-package-tracking-scraper"
+        },
+        "actorInputMode": "json",
+        "customBody": "={{ JSON.stringify({ trackingNumbers: $json.trackingNumbers.map(n => String(n).trim()), language: \"en\", carrier: 0 }) }}",
+        "timeout": 150,
+        "memory": 512,
+        "maxTotalChargeUsd": 0.5,
+        "authentication": "apifyApi"
+      },
+      "notes": "Runs the Apify Actor muhammadafzal/17track-package-tracking-scraper, which accepts at most 10 numbers per run. Numbers that are not found return no row and keep their old sheet values. A failed run goes to the error output so the loop moves on to the next batch.",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "c48d5452-e03b-4696-b7dc-9a7e12126e19",
+      "name": "Save status to sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1664,
+        0
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "appendOrUpdate",
+        "authentication": "oAuth2",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "Shipments tracker"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Shipments"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "Tracking number"
+          ],
+          "value": {
+            "Tracking number": "={{ $json.trackingNumber }}",
+            "Status": "={{ $json.statusCategory }}",
+            "Status detail": "={{ $json.statusDescription || $json.status }}",
+            "Carrier": "={{ ($json.carriers || []).join(\", \") }}",
+            "Latest update": "={{ $json.latestEvent?.timestamp || \"\" }}",
+            "Location": "={{ $json.latestEvent?.location || \"\" }}",
+            "Last checked": "={{ $now.toISO() }}"
+          },
+          "schema": [
+            {
+              "id": "Tracking number",
+              "displayName": "Tracking number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status detail",
+              "displayName": "Status detail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Carrier",
+              "displayName": "Carrier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Latest update",
+              "displayName": "Latest update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last checked",
+              "displayName": "Last checked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "eec72e72-69d3-4d33-9fbc-b0c35e6b9a7e",
+      "name": "Take 10 numbers at a time",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        752,
+        240
+      ],
+      "parameters": {
+        "batchSize": 10
+      }
+    },
+    {
+      "id": "b1e3eee9-4f3e-450b-b00f-18527c08c50c",
+      "name": "Keep delivery exceptions",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.4,
+      "position": [
+        1552,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ [\"alert\", \"undelivered\", \"expired\"].includes($json.statusCategory) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "rightValue": ""
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true
+      }
+    },
+    {
+      "id": "aeffd984-be20-44b2-80b5-160149586dd8",
+      "name": "Email exception digest",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1776,
+        320
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "<__PLACEHOLDER_VALUE__Email address that receives exception alerts__>",
+        "subject": "={{ $input.all().length }} shipment(s) need attention",
+        "emailType": "html",
+        "message": "=<p>These shipments reported a delivery problem in today's check:</p><ul>{{ $input.all().map(i => \"<li><b>\" + i.json.trackingNumber + \"</b>: \" + (i.json.statusDescription || i.json.statusCategory) + \" (\" + (i.json.latestEvent?.location || \"location unknown\") + \") <a href=\\\"\" + i.json.sourceUrl + \"\\\">history</a></li>\").join(\"\") }}</ul>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "executeOnce": true,
+      "webhookId": "dac9de08-1977-41b8-922b-5d0c98c9f2a4"
+    }
+  ],
+  "connections": {
+    "Run every morning": {
+      "main": [
+        [
+          {
+            "node": "Read shipments sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read shipments sheet": {
+      "main": [
+        [
+          {
+            "node": "Keep undelivered shipments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep undelivered shipments": {
+      "main": [
+        [
+          {
+            "node": "Take 10 numbers at a time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect batch numbers": {
+      "main": [
+        [
+          {
+            "node": "Track batch on 17TRACK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track batch on 17TRACK": {
+      "main": [
+        [
+          {
+            "node": "Save status to sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Keep delivery exceptions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Take 10 numbers at a time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save status to sheet": {
+      "main": [
+        [
+          {
+            "node": "Take 10 numbers at a time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take 10 numbers at a time": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Collect batch numbers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep delivery exceptions": {
+      "main": [
+        [
+          {
+            "node": "Email exception digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "nodeGroups": [
+    {
+      "id": "1e4d4f3c-c1af-4831-bcfd-133a8c972173",
+      "name": "Load open shipments",
+      "nodeNames": [
+        "Read shipments sheet",
+        "Keep undelivered shipments"
+      ],
+      "description": "Reads the Shipments tab and keeps rows that have a tracking number and are not delivered yet."
+    },
+    {
+      "id": "a5c30944-d747-4cb5-87ff-6723061d7b58",
+      "name": "Track batch",
+      "nodeNames": [
+        "Collect batch numbers",
+        "Track batch on 17TRACK"
+      ],
+      "description": "Sends up to 10 tracking numbers to the 17TRACK Actor on Apify and returns one row per package found."
+    },
+    {
+      "id": "b4b5f7fe-f98d-4f41-98c4-f205bbb25e4d",
+      "name": "Alert on exceptions",
+      "nodeNames": [
+        "Keep delivery exceptions",
+        "Email exception digest"
+      ],
+      "description": "Sends one email per batch listing packages that are undelivered, expired or flagged with an alert."
+    }
+  ]
+}
