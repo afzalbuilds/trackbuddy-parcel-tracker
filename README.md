@@ -2,7 +2,7 @@
 
 Track packages without leaving Claude. Paste one tracking number or a whole list, and the plugin returns the current status, estimated delivery, last scan and full checkpoint history for **DHL, FedEx, UPS, Amazon Shipping, GOFO, SPX Express and more than 1,000 other carriers through 17TRACK** (USPS, China Post, YunExpress, Cainiao, 4PX, Yanwen, Royal Mail, Australia Post and others). It also tracks **Maersk ocean containers** by container, bill of lading or booking number.
 
-It works in Claude chat, in Cowork and in Claude Code, and the same repository also installs in Grok Build, Grok Bot, Cursor and Hermes Agent (see [Other AI agents](#other-ai-agents-grok-and-hermes)). There are no carrier developer accounts to apply for and no API keys to paste. Lookups run as pay-per-record Apify Actors on your own Apify account, and you are only charged for records that come back with data.
+It works in Claude chat, in Cowork and in Claude Code, and the same repository also installs as a native plugin in OpenAI Codex, Gemini CLI, GitHub Copilot, Grok, Cursor, Hermes Agent and OpenCode, with the skills usable in many more agents (see [Other AI agents](#other-ai-agents-codex-gemini-cli-copilot-and-more)). There are no carrier developer accounts to apply for and no API keys to paste. Lookups run as pay-per-record Apify Actors on your own Apify account, and you are only charged for records that come back with data.
 
 ## What you can ask
 
@@ -45,16 +45,66 @@ Upgrading from 1.0: version 1.1 adds four trackers to the connector. If Claude s
 
 In Claude Code, `/mcp` shows the connection state and `/trackbuddy-parcel-tracker:track <numbers>` runs a lookup directly.
 
-## Other AI agents: Grok and Hermes
+## Other AI agents: Codex, Gemini CLI, Copilot and more
 
-The skills and the tracking server are the same on every platform; only the manifest each app reads differs. All of them sign you in to Apify in the browser, and lookups are billed to your own Apify account exactly as in Claude.
+The skills and the **package-tracking** server are the same in every app; only the manifest each app reads differs. Every app signs you in to Apify in the browser, and lookups are billed to your own Apify account exactly as in Claude.
 
-| App | Reads | What loads |
+| App | Install | What loads |
 |---|---|---|
-| Claude (chat, Cowork, Claude Code) | `.claude-plugin/plugin.json`, `.mcp.json` | skills, commands, auditor agent, tracking server |
-| Grok Build | `.grok-plugin/plugin.json`, `.mcp.json` | skills, commands, auditor agent, tracking server |
-| Cursor, and Grok Bot through the same plugin format | `.cursor-plugin/plugin.json`, `mcp.json` | skills, commands, auditor agent, tracking server |
-| Hermes Agent | `plugin.json`, `mcp.json` (Agent Plugins v1) | skills and tracking server |
+| Claude (chat, Cowork, Claude Code) | [How to set it up](#how-to-set-it-up) | skills, commands, tracking-auditor agent, package-tracking server |
+| OpenAI Codex (CLI and app) | [OpenAI Codex](#openai-codex) | skills, package-tracking server |
+| Gemini CLI (and Qwen Code) | [Gemini CLI](#gemini-cli) | skills, commands, tracking-auditor subagent, package-tracking server |
+| GitHub Copilot CLI and VS Code | [GitHub Copilot](#github-copilot-cli-and-vs-code) | skills, commands, tracking-auditor agent, package-tracking server |
+| Grok Build | [Grok Build](#grok-build) | skills, commands, tracking-auditor agent, package-tracking server |
+| Cursor and Grok Bot | [Grok Bot and Cursor](#grok-bot-and-cursor) | skills, commands, tracking-auditor agent, package-tracking server |
+| Hermes Agent | [Hermes Agent](#hermes-agent) | skills, package-tracking server |
+| OpenCode | [OpenCode](#opencode) | skills, commands, tracking-auditor subagent, package-tracking server |
+| Antigravity, Kiro, Devin, Factory Droid, Augment, Junie, Mistral Vibe | [More agents](#more-agents) | skills and package-tracking server, plus commands and agent where the app supports them |
+| Any other agent with skills support | [More agents](#more-agents) | skills, plus the server URL added by hand |
+
+Checked on 2026-11-16: the plugin installs, and its skills and server load, in Codex 0.167, Gemini CLI 0.68.0, GitHub Copilot CLI 1.0.112 and OpenCode 1.18.27, and it passes the plugin validators of Claude Code, Gemini CLI, Grok Build and Hermes Agent. Apify sign-in and a live lookup were not repeated in those apps. The apps under [More agents](#more-agents) follow each app's published plugin format but were not installed.
+
+### OpenAI Codex
+
+Needs Codex CLI 0.142 or newer (`codex update`). The Codex app uses the same settings, so the plugin appears there too.
+
+```bash
+codex plugin marketplace add afzalbuilds/trackbuddy-parcel-tracker
+```
+
+```bash
+codex plugin add trackbuddy-parcel-tracker@imzlab
+```
+
+```bash
+codex mcp login package-tracking
+```
+
+The last command opens Apify's sign-in page in your browser. Ask Codex to track a number. You can also call a skill by name, for example `$track-package`. Codex loads the skills and the package-tracking server, but not the plugin's commands or the tracking-auditor agent, so ask for a bulk report in plain words there.
+
+### Gemini CLI
+
+```bash
+gemini extensions install https://github.com/afzalbuilds/trackbuddy-parcel-tracker
+```
+
+When Gemini CLI first connects to the package-tracking server it opens Apify's sign-in page in your browser; if it does not, run `/mcp auth package-tracking` inside Gemini CLI. The extension adds the skills, the `/track` and `/track-report` commands and the tracking-auditor subagent. Update it later with `gemini extensions update trackbuddy-parcel-tracker`.
+
+Qwen Code installs the same extension: `qwen extensions install afzalbuilds/trackbuddy-parcel-tracker`.
+
+### GitHub Copilot CLI and VS Code
+
+```bash
+copilot plugin marketplace add afzalbuilds/trackbuddy-parcel-tracker
+```
+
+```bash
+copilot plugin install trackbuddy-parcel-tracker@imzlab
+```
+
+In a Copilot CLI session, run `/mcp auth package-tracking` to sign in to Apify. The plugin adds the skills, the `/track` and `/track-report` commands, the tracking-auditor agent and the package-tracking server.
+
+In VS Code, turn on the `chat.plugins.enabled` setting, run **Chat: Install Plugin from Source** from the Command Palette and enter `afzalbuilds/trackbuddy-parcel-tracker`.
 
 ### Grok Build
 
@@ -93,6 +143,37 @@ Hermes opens Apify's consent page in your browser. After you allow access it lis
 Every lookup is a paid Actor run on your Apify account, so the package marks the server `untrusted`: Hermes asks before each tracking call and refuses them in unattended runs. Your own server entry replaces the package's entry, including that setting; add `trust: untrusted` under `mcp_servers.package-tracking` in `~/.hermes/config.yaml` to keep the prompts.
 
 To install only one skill instead of the whole package: `hermes skills install afzalbuilds/trackbuddy-parcel-tracker/skills/track-package`. The tracking server still has to be added as above.
+
+### OpenCode
+
+OpenCode has no plugin bundle, so the skills, the server and the extras are added separately:
+
+```bash
+npx skills add afzalbuilds/trackbuddy-parcel-tracker -a opencode -g
+```
+
+```bash
+opencode mcp add package-tracking --url "https://mcp.apify.com/?tools=muhammadafzal/17track-package-tracking-scraper,muhammadafzal/dhl-package-tracking-scraper,muhammadafzal/fedex-package-tracking-scraper,muhammadafzal/ups-package-tracking-scraper,muhammadafzal/multi-carrier-package-tracking,muhammadafzal/amazon-shipping-tracking-scraper,muhammadafzal/gofo-package-tracking-scraper,muhammadafzal/spx-express-package-tracking-scraper,muhammadafzal/maersk-container-tracking-scraper"
+```
+
+```bash
+opencode mcp auth package-tracking
+```
+
+For the `/track` and `/track-report` commands and the tracking-auditor subagent, copy the `opencode/commands` and `opencode/agents` folders of this repository into `~/.config/opencode/`.
+
+### More agents
+
+| App | How to install |
+|---|---|
+| Google Antigravity | `agy plugin install https://github.com/afzalbuilds/trackbuddy-parcel-tracker` |
+| Kiro | Powers panel, **Add Custom Power**, **Import power from GitHub**, then `https://github.com/afzalbuilds/trackbuddy-parcel-tracker` |
+| Devin (formerly Windsurf) | `devin plugins install afzalbuilds/trackbuddy-parcel-tracker` |
+| Factory Droid | `droid plugin marketplace add afzalbuilds/trackbuddy-parcel-tracker`, then `droid plugin install trackbuddy-parcel-tracker@imzlab --scope user` |
+| Augment (Auggie CLI) | `auggie plugin marketplace add afzalbuilds/trackbuddy-parcel-tracker`, then enable the plugin in `/plugins` |
+| JetBrains Junie CLI | `/extensions marketplace add afzalbuilds/trackbuddy-parcel-tracker`, then `/extensions install trackbuddy-parcel-tracker` |
+| Mistral Vibe | clone this repository into `~/.vibe/plugins/trackbuddy-parcel-tracker`, run `/reload-plugins`, then `/mcp login package-tracking` |
+| Cline, Kilo Code, Amp, Goose and other agents that read Agent Skills | `npx skills add afzalbuilds/trackbuddy-parcel-tracker` installs the skills; then add the server URL below as a remote MCP server with OAuth in that app |
 
 ### Tracking server URL
 
@@ -161,13 +242,13 @@ Before any batch over 10 numbers, Claude tells you the estimated cost and asks b
 - **bulk-tracking-report**: paste a list or a CSV column, get a status table, exceptions first, plus a downloadable CSV.
 - **delivery-exceptions**: triage delayed, failed, returned and held shipments and draft customer replies.
 - **tracking-cost-estimate**: estimate the Apify cost of a batch before running it.
-- **/trackbuddy-parcel-tracker:track** and **/trackbuddy-parcel-tracker:track-report** commands (Cowork, Claude Code, Grok Build).
-- **tracking-auditor** agent (Cowork, Claude Code, Grok Build): runs a list and writes an exceptions report.
+- **/trackbuddy-parcel-tracker:track** and **/trackbuddy-parcel-tracker:track-report** commands (Claude Code, Cowork, Gemini CLI, Copilot, Grok Build, OpenCode).
+- **tracking-auditor** agent (Claude Code, Cowork, Gemini CLI, Copilot, Grok Build, OpenCode): runs a list and writes an exceptions report.
 
-Hermes Agent loads the skills and the tracking server; it has no equivalent for the commands and the auditor agent, so ask for a bulk report in plain words there.
+Codex and Hermes Agent load the skills and the package-tracking server only; there, ask for a bulk report in plain words. In Codex the skills can also be called by name, for example `$track-package`.
 
 ## Source and support
 
 Source: https://github.com/afzalbuilds/trackbuddy-parcel-tracker. Issues and feature requests: https://github.com/afzalbuilds/trackbuddy-parcel-tracker/issues. The Actors are published on Apify Store by Imzlab Technologies under the `muhammadafzal` account.
 
-Last verified: 2026-11-13. Tested on Hermes Agent 0.23.1 and with Grok Build's plugin validator.
+Last verified: 2026-11-16. Live lookups tested in Claude and Hermes Agent 0.23.1; install and loading checked in Codex 0.167, Gemini CLI 0.68.0, GitHub Copilot CLI 1.0.112 and OpenCode 1.18.27; Grok Build's plugin validator passes.

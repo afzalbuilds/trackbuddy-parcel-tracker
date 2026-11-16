@@ -1,0 +1,20 @@
+{
+  "name": "imzlab",
+  "interface": {
+    "displayName": "Imzlab Technologies"
+  },
+  "plugins": [
+    {
+      "name": "trackbuddy-parcel-tracker",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Business & Operations"
+    }
+  ]
+}

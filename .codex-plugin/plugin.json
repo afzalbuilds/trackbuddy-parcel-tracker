@@ -1,0 +1,60 @@
+{
+  "name": "trackbuddy-parcel-tracker",
+  "version": "1.2.0",
+  "description": "Track packages from your AI agent: DHL, FedEx, UPS, Amazon Shipping, GOFO, SPX and 1,000+ carriers via 17TRACK (USPS, China Post, YunExpress, Cainiao, Royal Mail), plus Maersk containers. Paste tracking numbers, get status, ETA and scan history. Pay per record on your Apify account, no carrier API keys.",
+  "author": {
+    "name": "Imzlab Technologies",
+    "email": "info@imzlab.com",
+    "url": "https://imzlab.com"
+  },
+  "homepage": "https://github.com/afzalbuilds/trackbuddy-parcel-tracker#readme",
+  "repository": "https://github.com/afzalbuilds/trackbuddy-parcel-tracker",
+  "license": "MIT",
+  "keywords": [
+    "package tracking",
+    "parcel tracking",
+    "track package",
+    "dhl tracking",
+    "fedex tracking",
+    "ups tracking",
+    "usps tracking",
+    "17track",
+    "amazon shipping tracking",
+    "shipment tracking",
+    "bulk tracking",
+    "delivery status",
+    "logistics",
+    "ecommerce",
+    "customer support",
+    "tba tracking",
+    "gofo tracking",
+    "spx tracking",
+    "shopee express",
+    "maersk container tracking",
+    "container tracking",
+    "apify"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Package Tracker",
+    "shortDescription": "Track parcels and containers",
+    "longDescription": "Track packages from your AI agent: DHL, FedEx, UPS, Amazon Shipping, GOFO, SPX and 1,000+ carriers via 17TRACK (USPS, China Post, YunExpress, Cainiao, Royal Mail), plus Maersk containers. Paste tracking numbers, get status, ETA and scan history. Pay per record on your Apify account, no carrier API keys. Includes 5 skills (bulk-tracking-report, delivery-exceptions, track-container, track-package, tracking-cost-estimate) and Apify's hosted MCP server limited to Imzlab's Actors. After installing, run `codex mcp login package-tracking` to sign in to Apify in the browser.",
+    "developerName": "Imzlab Technologies",
+    "category": "Business & Operations",
+    "capabilities": [
+      "Read"
+    ],
+    "defaultPrompt": [
+      "Track 1Z999AA10123456784 and 794644790138.",
+      "Where is container MSKU0078257 and when does it arrive?",
+      "Which tracking numbers in orders.csv are late? List the exceptions first."
+    ],
+    "websiteURL": "https://github.com/afzalbuilds/trackbuddy-parcel-tracker#readme",
+    "privacyPolicyURL": "https://imzlab.com/privacy#package-tracker",
+    "termsOfServiceURL": "https://imzlab.com/terms#package-tracker",
+    "brandColor": "#004848",
+    "logo": "./assets/icon.png",
+    "composerIcon": "./assets/icon.png"
+  }
+}

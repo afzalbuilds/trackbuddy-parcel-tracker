@@ -1,0 +1,14 @@
+# Generated copy of the Claude plugin file; edit the original in commands/ or agents/ and regenerate.
+interface:
+  display_name: "Delivery Exceptions"
+  short_description: "Triage late or failed parcels and draft replies"
+  brand_color: "#004848"
+  default_prompt: "Use $delivery-exceptions to draft a reply for a FedEx parcel stuck in an exception."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "package-tracking"
+      description: "Apify's hosted MCP server limited to Imzlab Technologies' Actors (sign in with Apify)"
+      transport: "streamable_http"
+      url: "https://mcp.apify.com/?tools=muhammadafzal/17track-package-tracking-scraper,muhammadafzal/dhl-package-tracking-scraper,muhammadafzal/fedex-package-tracking-scraper,muhammadafzal/ups-package-tracking-scraper,muhammadafzal/multi-carrier-package-tracking,muhammadafzal/amazon-shipping-tracking-scraper,muhammadafzal/gofo-package-tracking-scraper,muhammadafzal/spx-express-package-tracking-scraper,muhammadafzal/maersk-container-tracking-scraper"
