@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "trackbuddy-parcel-tracker",
-      "source": "./",
+      "source": "./plugins/trackbuddy-parcel-tracker",
       "description": "Package Tracker: DHL, FedEx, UPS, USPS, Amazon Shipping, GOFO, SPX and 1,000+ carriers via 17TRACK, plus Maersk containers, inside Claude. Pay per record on Apify.",
       "category": "productivity",
       "tags": [
