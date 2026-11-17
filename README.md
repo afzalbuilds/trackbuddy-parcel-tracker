@@ -251,6 +251,4 @@ Codex and Hermes Agent load the skills and the package-tracking server only; the
 
 Source: https://github.com/afzalbuilds/trackbuddy-parcel-tracker. Issues and feature requests: https://github.com/afzalbuilds/trackbuddy-parcel-tracker/issues. The Actors are published on Apify Store by Imzlab Technologies under the `muhammadafzal` account.
 
-The Claude plugin is the [plugins/trackbuddy-parcel-tracker](plugins/trackbuddy-parcel-tracker) folder; the Claude directory and `claude plugin install` use only that folder. The repository root holds the same skills plus the manifests and files of the other apps.
-
-Last verified: 2026-11-16. Live lookups tested in Claude and Hermes Agent 0.23.1; install and loading checked in Claude Code 2.1.325, Codex 0.167, Gemini CLI 0.68.0, GitHub Copilot CLI 1.0.112, Grok Build 1.0.77 and OpenCode 1.18.27; the plugin validators of Claude Code, Gemini CLI, Grok Build and Hermes Agent pass.
+Last verified: 2026-11-16. Live lookups tested in Claude and Hermes Agent 0.23.1; install and loading checked in Codex 0.167, Gemini CLI 0.68.0, GitHub Copilot CLI 1.0.112 and OpenCode 1.18.27; Grok Build's plugin validator passes.
